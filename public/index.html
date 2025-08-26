@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Lista de Usuários</h1>
+  <ul id="user-list"></ul>
+
+  <h2>Adicionar Usuário</h2>
+  <input type="text" id="name" placeholder="Nome" />
+  <button onclick="addUser()">Adicionar</button>
+
+  <script>
+    async function fetchUsers() {
+      const res = await fetch('/api/users');
+      const users = await res.json();
+      const list = document.getElementById('user-list');
+      list.innerHTML = '';
+      users.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = user.name;
+        list.appendChild(li);
+      });
+    }
+
+    async function addUser() {
+      const name = document.getElementById('name').value;
+      await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+      });
+      document.getElementById('name').value = '';
+      fetchUsers();
+    }
+
+    fetchUsers();
+  </script>
+</body>
+</html>
